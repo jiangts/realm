@@ -80,4 +80,7 @@ called each time the model changes with the value of the model.
 
 ## License
 
-MIT
+Copyright © 2019 Allan Jiang
+
+Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
+
