@@ -1,4 +1,4 @@
-(defproject realm "0.1.0"
+(defproject realm "0.1.1"
   :description "Elm architecture for Reagent components"
   :url "https://github.com/jiangts/realm"
   :license {:name "Eclipse Public License"
