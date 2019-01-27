@@ -27,10 +27,12 @@
   changes with the value of the model"
   [{:keys [model events view]}]
   (let [model (r/atom (or model {}))
-        handlers (volatile! events)
+        handlers (volatile! {})
         >dispatch (fn [event & args]
-                    (if-let [handler (get @handlers event)]
-                      (reset! model (handler @model args))
+                    (if-let [orig-handler (get events event)]
+                      (if-let [override-handler (get @handlers event)]
+                        (apply override-handler orig-handler args)
+                        (apply orig-handler args))
                       (throw (js/Error. (str "Event handler '" event "' not found")))))
         >set #(swap! model assoc-in %1 %2)
         watching-model? (volatile! false)]
@@ -45,9 +47,7 @@
           (when ext-model
             (reset! model ext-model))
           (when override-events
-            (doseq [[ev handler] override-events]
-              (when-let [orig-handler (get @handlers ev)]
-                (vswap! handlers assoc ev (partial handler orig-handler))))))
+            (vreset! handlers override-events)))
         ;; handle model watcher
         (if watch-model
           (when (not @watching-model?)
