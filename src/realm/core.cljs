@@ -30,9 +30,10 @@
         handlers (volatile! {})
         >dispatch (fn [event & args]
                     (if-let [orig-handler (get events event)]
-                      (if-let [override-handler (get @handlers event)]
-                        (apply override-handler orig-handler args)
-                        (apply orig-handler args))
+                      (reset! model
+                              (if-let [override-handler (get @handlers event)]
+                                (apply override-handler orig-handler @model args)
+                                (apply orig-handler @model args)))
                       (throw (js/Error. (str "Event handler '" event "' not found")))))
         >set #(swap! model assoc-in %1 %2)
         watching-model? (volatile! false)]
